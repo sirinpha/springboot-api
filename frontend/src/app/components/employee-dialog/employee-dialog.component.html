@@ -1,0 +1,98 @@
+<h2 mat-dialog-title>{{ data.employee ? 'Edit Employee' : 'Add New Employee' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="employeeForm" class="employee-form">
+    <!-- Name Field -->
+    <div class="form-field">
+      <label for="name">Name</label>
+      <input pInputText id="name" formControlName="name" class="w-full"/>
+      <small *ngIf="employeeForm.get('name')?.invalid && employeeForm.get('name')?.touched" class="error-message">
+        Name is required
+      </small>
+    </div>
+
+    <!-- Email Field -->
+    <div class="form-field">
+      <label for="email">Email</label>
+      <input pInputText id="email" formControlName="email" class="w-full"/>
+      <small *ngIf="employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched" class="error-message">
+        Valid email is required
+      </small>
+    </div>
+
+    <!-- Position Field -->
+    <div class="form-field">
+      <label for="position">Position</label>
+      <p-dropdown id="position" [options]="positions" formControlName="position" optionLabel="name"
+                  [showClear]="true" placeholder="Select a Position" class="w-full"></p-dropdown>
+      <small *ngIf="employeeForm.get('position')?.invalid && employeeForm.get('position')?.touched"
+             class="error-message">
+        Position is required
+      </small>
+    </div>
+    <!-- Password field -->
+    <div class="form-field">
+      <label for="password">Password</label>
+      <p-password
+        id="password"
+        formControlName="password"
+        feedback="false"
+        toggleMask="true"
+        styleClass="w-full"
+        inputStyleClass="w-full p-2">
+      </p-password>
+
+      <small *ngIf="employeeForm.get('password')?.invalid && employeeForm.get('password')?.touched" class="error-message">
+        Password is required
+      </small>
+    </div>
+
+    <!-- Department Field -->
+    <div class="form-field">
+      <label for="department">Department</label>
+      <p-dropdown id="department" [options]="departments" formControlName="department" optionLabel="name"
+                  [showClear]="true" placeholder="Select a Department" class="w-full"></p-dropdown>
+      <small *ngIf="employeeForm.get('department')?.invalid && employeeForm.get('department')?.touched"
+             class="error-message">
+        Department is required
+      </small>
+    </div>
+
+    <!-- Salary Field -->
+    <div class="form-field">
+      <label for="salary">Salary</label>
+      <p-inputNumber id="salary" formControlName="salary" mode="currency" currency="USD" class="w-full"></p-inputNumber>
+    </div>
+
+    <!-- Phone Field -->
+    <div class="form-field">
+      <label for="phone">Phone</label>
+      <input pInputText id="phone" formControlName="phone" class="w-full"/>
+    </div>
+
+    <!-- Join Date Field -->
+    <div class="form-field">
+      <label for="joinDate">Join Date</label>
+      <p-calendar
+        id="joinDate"
+        formControlName="joinDate"
+        [showIcon]="true"
+        [appendTo]="null"
+        placeholder="Select date"
+        class="w-full"
+      ></p-calendar>
+    </div>
+
+    <!-- Address Field -->
+    <div class="form-field">
+      <label for="address">Address</label>
+      <textarea pInputTextarea id="address" formControlName="address" rows="3" class="w-full"></textarea>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="onCancel()"></button>
+  <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="onSubmit()"
+          [disabled]="employeeForm.invalid"></button>
+</mat-dialog-actions>

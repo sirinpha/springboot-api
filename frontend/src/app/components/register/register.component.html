@@ -1,0 +1,128 @@
+<!-- register.component.html -->
+<div class="flex align-items-center justify-content-center min-h-screen">
+  <div class="surface-card p-4 shadow-4 border-round" style="width: 350px;">
+    <div class="flex flex-column align-items-center">
+      <img src="https://cdn-icons-png.flaticon.com/512/6681/6681204.png" alt="Image" height="50" class="mb-3">
+      <div class="text-900 text-3xl font-medium mb-3">Sign Up</div>
+
+      <!-- แสดงข้อความแจ้งเตือน -->
+      <p-message *ngIf="error" severity="error" [text]="error" styleClass="w-full mb-3"></p-message>
+      <p-message *ngIf="success" severity="success" [text]="success" styleClass="w-full mb-3"></p-message>
+
+      <div class="w-full mt-3">
+        <!-- Username field -->
+        <div class="mb-4">
+          <span class="p-float-label w-full">
+            <p-floatlabel variant="on" class="w-full mb-4">
+            <input pInputText id="username" [(ngModel)]="username" class="w-full p-2" autocomplete="off"/>
+            <label for="username">Username</label>
+            </p-floatlabel>
+          </span>
+        </div>
+        <!-- Email field -->
+        <div class="mb-4">
+          <span class="p-float-label w-full">
+            <p-floatlabel variant="on" class="w-full mb-4">
+            <input pInputText id="email" [(ngModel)]="email" class="w-full p-2" autocomplete="off"/>
+            <label for="email">Email</label>
+            </p-floatlabel>
+          </span>
+        </div>
+
+        <!-- position field -->
+        <div class="field mb-4">
+          <span class="p-float-label w-full">
+            <p-floatlabel variant="on" class="w-full mb-4">
+              <p-dropdown id="position" [options]="positions" [(ngModel)]="selectedPosition"
+                          optionLabel="name" [showClear]="true" class="w-full"></p-dropdown>
+              <label for="position">Position</label>
+            </p-floatlabel>
+          </span>
+        </div>
+
+        <!-- แผนก -->
+        <div class="field mb-4">
+          <span class="p-float-label w-full">
+            <p-floatlabel variant="on" class="w-full mb-4">
+              <p-dropdown id="departments" [options]="departments" [(ngModel)]="selectedDepartment"
+                          optionLabel="name" [showClear]="true" class="w-full"></p-dropdown>
+              <label for="departments">Department</label>
+            </p-floatlabel>
+          </span>
+        </div>
+
+        <div class="field mb-4">
+          <span class="p-float-label w-full">
+             <p-floatlabel variant="on" class="w-full mb-4">
+              <input id="salary" type="number" pInputText [(ngModel)]="user.salary" class="w-full" />
+              <label for="salary">Salary</label>
+             </p-floatlabel>
+          </span>
+        </div>
+
+        <!-- วันที่เข้างาน -->
+        <div class="field mb-4">
+          <span class="p-float-label w-full">
+            <p-floatlabel variant="on" class="w-full mb-4">
+            <p-calendar id="joinDate" [(ngModel)]="user.joinDate" [appendTo]="'body'" [showIcon]="true" class="w-full"></p-calendar>
+            <label for="joinDate">Join Date</label>
+            </p-floatlabel>
+          </span>
+        </div>
+
+        <!-- เบอร์โทรศัพท์ -->
+        <div class="field mb-4">
+    <span class="p-float-label w-full">
+      <p-floatlabel variant="on" class="w-full mb-4">
+      <input id="phone" type="tel" pInputText [(ngModel)]="user.phone" class="w-full"/>
+      <label for="phone">Phone Number</label>
+      </p-floatlabel>
+    </span>
+        </div>
+
+        <!-- ที่อยู่ -->
+        <div class="field mb-4">
+    <span class="p-float-label w-full">
+      <p-floatlabel variant="on" class="w-full mb-4">
+      <textarea id="address" pInputTextarea [(ngModel)]="user.address" class="w-full" rows="3"></textarea>
+      <label for="address">Address</label>
+      </p-floatlabel>
+    </span>
+        </div>
+
+        <!-- Password field -->
+        <div class="mb-4">
+          <span class="p-float-label w-full">
+            <p-floatlabel variant="on" class="w-full mb-4">
+              <p-password id="password" [(ngModel)]="password" [feedback]="false" [toggleMask]="true"
+                          styleClass="w-full" inputStyleClass="w-full p-2"></p-password>
+                      <label for="password">Password</label>
+            </p-floatlabel>
+          </span>
+        </div>
+
+        <!-- Confirm Password field -->
+        <div class="mb-4">
+          <span class="p-float-label w-full">
+            <p-floatlabel variant="on" class="w-full mb-4">
+            <p-password id="confirmPassword" [(ngModel)]="confirmPassword" [feedback]="false" [toggleMask]="true"
+                        styleClass="w-full" inputStyleClass="w-full p-2"></p-password>
+            <label for="confirmPassword">Confirm Password</label>
+            </p-floatlabel>
+          </span>
+        </div>
+
+        <!-- Register button -->
+        <button pButton pRipple label="Register" icon="pi pi-user-plus" class="w-full mt-3" type="button"
+                [loading]="loading" (click)="onSubmit()"></button>
+
+        <!-- Link to login page -->
+        <div class="text-center mt-4">
+          <span class="text-600">Already have an account? </span>
+          <a class="font-medium no-underline ml-2 text-primary cursor-pointer hover:underline"
+             (click)="navigateToRegister()">Sign In</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

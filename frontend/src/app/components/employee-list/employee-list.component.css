@@ -1,0 +1,107 @@
+:host ::ng-deep {
+  .p-datatable .p-datatable-thead > tr > th {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+  }
+
+  .p-datatable .p-datatable-tbody > tr:nth-child(even) {
+    background-color: #f8f9fa;
+  }
+
+  .p-datatable .p-datatable-tbody > tr:hover {
+    background-color: #e9ecef;
+  }
+
+  .p-toolbar {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-top-right-radius: 6px;
+    border-top-left-radius: 6px;
+  }
+}
+/*/////*/
+:host ::ng-deep {
+  .employee-card {
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .employee-card .p-card-header {
+    padding: 0;
+  }
+
+  .header {
+    background: linear-gradient(90deg, #4a6bff 0%, #5e7cff 100%);
+    border-radius: 1rem 1rem 0 0;
+  }
+
+  .search-input {
+    border-radius: 2rem;
+    min-width: 300px;
+    background-color: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+  }
+
+  .search-input:focus {
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(74, 107, 255, 0.2);
+  }
+
+  .employee-table .p-datatable-thead th {
+    background-color: #f5f8ff;
+    border-bottom: 2px solid #e0e7ff;
+    padding: 1rem;
+  }
+
+  .employee-table .p-datatable-tbody > tr {
+    transition: background-color 0.2s;
+  }
+
+  .employee-table .p-datatable-tbody > tr:hover {
+    background-color: #f0f4ff !important;
+  }
+
+  .p-datatable .p-sortable-column:focus {
+    box-shadow: none;
+    outline: 2px solid #e0e7ff;
+  }
+
+  .employee-badge {
+    border-radius: 2rem;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .position-manager {
+    background-color: #d1e7dd;
+    color: #146c43;
+  }
+
+  .position-developer {
+    background-color: #cfe2ff;
+    color: #084298;
+  }
+
+  .position-designer {
+    background-color: #f8d7da;
+    color: #b02a37;
+  }
+
+  .position-specialist {
+    background-color: #fff3cd;
+    color: #997404;
+  }
+
+  .position-support {
+    background-color: #e2e3e5;
+    color: #4f5153;
+  }
+
+  .position-coordinator {
+    background-color: #d3d3d3;
+    color: #6c757d;
+  }
+}
