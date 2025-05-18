@@ -4,13 +4,13 @@ import com.postgresql.springapi.config.PasswordEncoderConfig;
 import com.postgresql.springapi.dto.ApiResponse;
 import com.postgresql.springapi.dto.EmployeeDto;
 import com.postgresql.springapi.dto.PagedResponse;
-import com.postgresql.springapi.model.Employee;
-import com.postgresql.springapi.services.EmployeeService;
+import com.postgresql.springapi.exception.ResourceNotFoundException;
+import com.postgresql.springapi.entity.Employee;
+import com.postgresql.springapi.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.yaml.snakeyaml.events.Event;
 
 import java.util.List;
 import java.util.stream.Collectors;

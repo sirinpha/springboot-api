@@ -1,5 +1,8 @@
 package com.postgresql.springapi.dto;
 
+import lombok.Data;
+
+@Data
 public class AuthResponse {
 
     private String token;
@@ -20,16 +23,5 @@ public class AuthResponse {
         this.role = role; // กำหนด role ที่นี่
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public String getRole() {
-        return role;
-    }
 }
 

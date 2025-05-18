@@ -3,11 +3,12 @@ package com.postgresql.springapi.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Date;
+
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
-@Getter
+@Data
 public class EmployeeDto {
 
     private Long id;

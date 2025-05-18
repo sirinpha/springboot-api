@@ -1,8 +1,8 @@
-package com.postgresql.springapi.services;
+package com.postgresql.springapi.service;
 
 import com.postgresql.springapi.config.PasswordEncoderConfig;
 import com.postgresql.springapi.dto.RegisterRequest;
-import com.postgresql.springapi.model.Employee;
+import com.postgresql.springapi.entity.Employee;
 import com.postgresql.springapi.repository.EmployeeRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -14,7 +14,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -77,12 +76,6 @@ public class EmployeeService implements UserDetailsService {
             System.out.println("User not found!");
             return new UsernameNotFoundException("User not found with username: " + username);
         });
-
-        System.out.println("Found user: " + user.getName() + ", password: " + user.getPassword());
-        // เพิ่ม logging เพื่อดีบัก
-        System.out.println("Found user: " + user.getName());
-        System.out.println("Stored password: " + user.getPassword());
-
         // สร้างออบเจ็คที่ใช้คืนข้อมูลจริง
         return new org.springframework.security.core.userdetails.User(
                 user.getName(),
@@ -129,9 +122,6 @@ public class EmployeeService implements UserDetailsService {
         return employeeRepository.save(employee);
     }
 
-//    public Optional<Employee> searchByName(String query) {
-//        return employeeRepository.findByNameContainingIgnoreCase(query);
-//    }
 
     public void deleteById(Long id) {
         employeeRepository.deleteById(id);

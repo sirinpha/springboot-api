@@ -38,29 +38,12 @@ services:
 
   #Angular Frontend application
   angular-app:
-    image: node:latest
+    image: angular-jwt:1.0
     container_name: angular-app
-    working_dir: /app
-    volumes:
-      - ./ang-jwt:/app
     ports:
-      - "4205:4200"
-    command: >
-      bash -c "npm start"
+      - "4205:80"
     networks:
       - app-network
-
-  docker-nginx:
-    image: nginx:latest
-    container_name: docker-nginx
-    ports:
-      - "8090:80"
-    command: ["nginx", "-g", "daemon off;"]
-    depends_on:
-      - angular-app
-      - spring-api
-    networks:
-      - app-network  # เพิ่ม networks
 
 networks:
   app-network:

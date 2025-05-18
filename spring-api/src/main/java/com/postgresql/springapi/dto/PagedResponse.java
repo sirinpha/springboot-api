@@ -1,11 +1,10 @@
 package com.postgresql.springapi.dto;
 
 import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
 
-@Setter
-@Getter
+import lombok.Data;
+
+@Data
 public class PagedResponse<T> {
     private int page;
     private int pageSize;

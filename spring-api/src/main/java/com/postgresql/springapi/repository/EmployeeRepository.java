@@ -1,6 +1,6 @@
 package com.postgresql.springapi.repository;
 
-import com.postgresql.springapi.model.Employee;
+import com.postgresql.springapi.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

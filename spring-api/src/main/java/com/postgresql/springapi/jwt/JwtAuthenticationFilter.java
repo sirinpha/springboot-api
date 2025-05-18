@@ -1,6 +1,8 @@
 package com.postgresql.springapi.jwt;
 
 import java.io.IOException;
+
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,14 +19,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
+@NoArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
 
-    private final JwtTokenUtil jwtTokenUtil;
     private UserDetailsService userDetailsService;
-
-    public JwtAuthenticationFilter(JwtTokenUtil jwtTokenUtil) {
-        this.jwtTokenUtil = jwtTokenUtil;
-    }
 
     @Autowired
     public void setUserDetailsService(UserDetailsService userDetailsService) {
@@ -32,37 +32,51 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
+    ) throws ServletException, IOException {
         try {
-            // Get JWT token from request
+            // ดึง JWT จาก request
             String jwt = getJwtFromRequest(request);
-
-            // Validate token and set authentication
-            if (StringUtils.hasText(jwt)) {
-                String username = jwtTokenUtil.getUsernameFromToken(jwt);
-
-                if (StringUtils.hasText(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-                    if (jwtTokenUtil.validateToken(jwt, userDetails)) {
-                        UsernamePasswordAuthenticationToken authentication =
-                                new UsernamePasswordAuthenticationToken(
-                                        userDetails, null, userDetails.getAuthorities());
-
-                        authentication.setDetails(
-                                new WebAuthenticationDetailsSource().buildDetails(request));
-
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                    }
-                }
+            if (!StringUtils.hasText(jwt) || !jwtTokenUtil.validateToken(jwt)) {
+                filterChain.doFilter(request, response);
+                return;
             }
+
+            // ดึง username จาก token
+            String username = jwtTokenUtil.getUsernameFromToken(jwt);
+            // ถ้า username ไม่มีค่าหรือ SecurityContext มี authentication อยู่แล้วก็ไม่ต้องทำอะไรเพิ่ม
+            if (!StringUtils.hasText(username) || SecurityContextHolder.getContext().getAuthentication() != null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            // โหลด UserDetails จาก username
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+            // สร้าง authentication token และ set details จาก request
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+            // Set authentication เข้าใน SecurityContext
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
         } catch (Exception ex) {
             logger.error("Could not set user authentication in security context", ex);
         }
 
+        // ส่งต่อ filter chain ต่อไป
         filterChain.doFilter(request, response);
     }
+
+
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {

@@ -1,4 +1,4 @@
-package com.postgresql.springapi.controller;
+package com.postgresql.springapi.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
