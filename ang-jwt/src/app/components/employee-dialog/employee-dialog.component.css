@@ -1,0 +1,46 @@
+.employee-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 10px 0;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+label {
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.error-message {
+  color: #f44336;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.w-full {
+  width: 100%;
+}
+
+:host ::ng-deep .p-calendar {
+  width: 100%;
+}
+
+:host ::ng-deep .p-inputnumber {
+  width: 100%;
+}
+
+:host ::ng-deep .p-dropdown {
+  width: 100%;
+}
+
+mat-dialog-actions {
+  padding: 16px 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
