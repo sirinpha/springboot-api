@@ -42,6 +42,14 @@ public class EmployeeController {
                 .stream().map(employee -> {
                     EmployeeDto dto = new EmployeeDto();
                     dto.setId(employee.getId());
+                    dto.setName(employee.getName());
+                    dto.setPosition(employee.getPosition());
+                    dto.setEmail(employee.getEmail());
+                    dto.setDepartment(employee.getDepartment());
+                    dto.setSalary(employee.getSalary());
+                    dto.setPhone(employee.getPhone());
+                    dto.setAddress(employee.getAddress());
+                    dto.setJoinDate(employee.getJoinDate());
                     return dto;
                 }).collect(Collectors.toList());
 

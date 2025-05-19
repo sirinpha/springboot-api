@@ -1,24 +1,21 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component,OnInit} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {CurrencyPipe, DatePipe, NgForOf, NgIf} from '@angular/common';
 import {Button} from 'primeng/button';
-import {TableModule} from 'primeng/table';
+import {TableLazyLoadEvent, TableModule} from 'primeng/table';
 import {ConfirmDialog, ConfirmDialogModule} from 'primeng/confirmdialog';
 import {InputText} from 'primeng/inputtext';
-import {Employee} from '../../models/employee.model';
 import {EmployeeService} from '../../services/employee.service';
 import {ConfirmationService, MessageService} from 'primeng/api';
-import {Toast} from 'primeng/toast';
-import {Toolbar} from 'primeng/toolbar';
-import { ToolbarModule } from 'primeng/toolbar';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { ToastModule } from 'primeng/toast';
+import {ToolbarModule} from 'primeng/toolbar';
+import {ButtonModule} from 'primeng/button';
+import {InputTextModule} from 'primeng/inputtext';
+import {ToastModule} from 'primeng/toast';
 import {EmployeeDialogComponent} from '../employee-dialog/employee-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
-import {AuthService} from '../../services/auth.service';
+import {MatDialog} from '@angular/material/dialog';
 import {Tooltip} from 'primeng/tooltip';
-import {Card} from 'primeng/card';
+import {Employee, Pagination} from '../../models/employee.model';
+import {CommonModule} from '@angular/common';
 
 @Component({
   selector: 'app-employee-list',
@@ -38,29 +35,39 @@ import {Card} from 'primeng/card';
     InputTextModule,
     ConfirmDialogModule,
     ToastModule,
-    Tooltip
+    Tooltip,
+    CommonModule
   ],
-  providers: [ConfirmationService, MessageService,EmployeeService],
-  templateUrl:'./employee-list.component.html',
-  styleUrl:'./employee-list.component.css'
+  providers: [ConfirmationService, MessageService, EmployeeService],
+  templateUrl: './employee-list.component.html',
+  styleUrl: './employee-list.component.css'
 })
-export class EmployeeListComponent  implements OnInit{
+export class EmployeeListComponent implements OnInit {
   employees: Employee[] = [];
+  pagination: Pagination = {
+    page: 1,
+    pageSize: 10,
+    totalPages: 0,
+    totalItems: 0,
+  };
+
   searchQuery: string = '';
   isAdmin: boolean = false;
   isLoading: boolean = false;
   loading: unknown;
   errorMessage: string = '';
 
+
   constructor(
     private employeeService: EmployeeService,
     private dialog: MatDialog,
     private confirmationService: ConfirmationService,
     private messageService: MessageService
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
-    this.loadEmployees();
+    // this.loadEmployees();
     this.checkUserRole();
   }
 
@@ -70,11 +77,14 @@ export class EmployeeListComponent  implements OnInit{
     this.isAdmin = userRole === "ADMIN";
   }
 
-  loadEmployees(): void {
+  loadEmployees(page: number = 1, pageSize: number = 10): void {
     this.loading = true;
-    this.employeeService.getEmployees().subscribe(
+    console.log("loadEmployees");
+    this.employeeService.getEmployees(page, pageSize).subscribe(
       (data) => {
-        this.employees = data;
+        this.employees = data?.data?.items;
+        this.pagination = data?.data;
+        console.log("data : ", data?.data?.items);
         this.loading = false;
       },
       (error) => {
@@ -94,7 +104,7 @@ export class EmployeeListComponent  implements OnInit{
     this.loading = true;
     this.employeeService.searchEmployees(this.searchQuery).subscribe(
       (data) => {
-        this.employees = data;
+        this.employees = data?.data?.items;
         this.loading = false;
       },
       (error) => {
@@ -138,7 +148,7 @@ export class EmployeeListComponent  implements OnInit{
   openEditDialog(employee: Employee): void {
     const dialogRef = this.dialog.open(EmployeeDialogComponent, {
       width: '600px',
-      data: { employee: { ...employee } }
+      data: {employee: {...employee}}
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -235,4 +245,17 @@ export class EmployeeListComponent  implements OnInit{
     });
   }
 
+  pageChange(event: TableLazyLoadEvent) {
+    console.log('pageChange', event);
+    const first = event.first ?? 0;
+    const rows = event.rows ?? 10; // หรือใช้ค่าที่เหมาะกับระบบของคุณ
+
+    const page = Math.floor(first / rows) + 1;
+    const pageSize = rows;
+
+    console.log('Page:', page);
+    console.log('Page Size:', pageSize);
+
+    this.loadEmployees(page, pageSize);
+  }
 }

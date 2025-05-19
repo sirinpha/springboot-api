@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {catchError, Observable, tap, throwError} from 'rxjs';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {Employee} from '../models/employee.model';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {ApiResponse, Employee, PagedResponse} from '../models/employee.model';
 import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
@@ -63,22 +63,6 @@ export class AuthService {
     return localStorage.getItem('user_role');
   }
 
-  getEmployees(): Observable<Employee[]> {
-    const headers = { 'Authorization': 'Bearer ' + localStorage.getItem('access_token') };
-    return this.http.get<Employee[]>(this.apiUrl, { headers });
-  }
-
-  // ดึงข้อมูลพนักงานตาม ID
-  getEmployeeById(id: number): Observable<Employee> {
-    return this.http.get<Employee>(`${this.apiUrl}/${id}`);
-  }
-
-
-  private buildAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('access_token');
-    return new HttpHeaders({ 'Authorization': `Bearer ${token}` });
-  }
-
   getToken(): string {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -86,27 +70,6 @@ export class AuthService {
       return '';
     }
     return token;
-  }
-
-  isTokenExpired(): boolean {
-    const token = localStorage.getItem('access_token');
-    if (!token) return true;
-    try {
-      const decoded = jwtDecode(token);
-      return decoded.exp < Date.now() / 1000;
-    } catch (err) {
-      return true;
-    }
-  }
-
-  refreshToken() {
-    return this.http.post<any>(`${this.apiUrl}/refresh-token`, {
-      refreshToken: localStorage.getItem('refresh_token')
-    }).pipe(
-      tap((response) => {
-        localStorage.setItem('access_token', response.token);
-      })
-    );
   }
 
 }

@@ -60,7 +60,7 @@ public class SecurityConfig {
 
     private CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:4205"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:4205","http://localhost:4200"));
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("*")); // อนุญาตทุก header
         corsConfiguration.setExposedHeaders(List.of("X-Rate-Limit-Remaining"));

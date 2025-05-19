@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import {catchError, Observable, switchMap, tap, throwError} from 'rxjs';
-import { Employee } from '../models/employee.model';
+import {ApiResponse, Employee, PagedResponse} from '../models/employee.model';
 import { AuthService } from './auth.service';
 import {Router} from '@angular/router';
 
@@ -13,18 +13,23 @@ export class EmployeeService {
 
   constructor(private http: HttpClient, private authService: AuthService,private router: Router) {}
 
-  getEmployees(): Observable<Employee[]> {
+  getEmployees(page: number, pageSize: number): Observable<ApiResponse<PagedResponse<Employee>>> {
     const headers = this.buildAuthHeaders();
-    return this.http.get<Employee[]>(this.apiUrl, { headers });
+
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('pageSize', pageSize.toString());
+
+    return this.http.get<ApiResponse<PagedResponse<Employee>>>(this.apiUrl, { headers, params });
   }
 
 
-  searchEmployees(query: string): Observable<Employee[]> {
+  searchEmployees(query: string): Observable<ApiResponse<PagedResponse<Employee>>> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.authService.getToken()}`
     });
 
-    return this.http.get<Employee[]>(`${this.apiUrl}/search`, {
+    return this.http.get<ApiResponse<PagedResponse<Employee>>>(`${this.apiUrl}/search`, {
       headers,
       params: { query }
     }).pipe(

@@ -1,6 +1,4 @@
 
-<!--//////-->
-
 <div class="card mb-4 shadow-sm">
   <p-toolbar styleClass="mb-3">
     <div class="p-toolbar-group-left">
@@ -33,13 +31,21 @@
       [value]="employees"
       [loading]="loading"
       [paginator]="true"
-      [rows]="10"
+      [rows]="pagination.pageSize"
+      (onLazyLoad)="pageChange($event)"
+      [showCurrentPageReport]="true"
+      [totalRecords]="pagination.totalItems"
+      [rowsPerPageOptions]="[10,20,50,100,2]"
       [rowHover]="true"
+      [lazy]="true"
+      [pageLinks]="5"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
       styleClass="p-datatable-gridlines p-datatable-sm"
       responsiveLayout="scroll"
     >
       <ng-template pTemplate="header">
         <tr>
+          <th pSortableColumn="id" class="text-left">ID <p-sortIcon field="id"></p-sortIcon></th>
           <th pSortableColumn="name" class="text-left">Name <p-sortIcon field="name"></p-sortIcon></th>
           <th pSortableColumn="email" class="text-left">Email <p-sortIcon field="email"></p-sortIcon></th>
           <th pSortableColumn="position" class="text-left">Position <p-sortIcon field="position"></p-sortIcon></th>
@@ -53,6 +59,7 @@
       </ng-template>
       <ng-template pTemplate="body" let-employee>
         <tr>
+          <td class="text-left font-medium">{{employee.id}}</td>
           <td class="text-left font-medium">{{employee.name}}</td>
           <td class="text-left">{{employee.email}}</td>
           <td class="text-left">{{employee.position}}</td>
