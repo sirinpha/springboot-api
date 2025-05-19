@@ -23,7 +23,7 @@ services:
 
   #Back-end Spring Boot application
   spring-api:
-    build: ./spring-api
+    image: spring-api:1.0
     container_name: spring-api
     depends_on:
       - postgres
