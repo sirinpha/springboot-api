@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,12 +69,9 @@ public class EmployeeController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteEmployee(@PathVariable Long id) {
-        try {
-            employeeService.deleteById(id);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting employee: " + e.getMessage());
-        }
+        employeeService.findById(id).orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
+        employeeService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping
@@ -140,6 +136,5 @@ public class EmployeeController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating employee: " + e.getMessage());
         }
     }
-
 }
 
