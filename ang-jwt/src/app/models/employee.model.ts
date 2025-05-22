@@ -31,3 +31,4 @@ export interface Employee {
   createdAt: string | null;    // หรือ Date | null
   enabled: boolean | null;
 }
+

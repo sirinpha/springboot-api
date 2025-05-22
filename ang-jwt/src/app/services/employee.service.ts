@@ -24,15 +24,17 @@ export class EmployeeService {
   }
 
 
-  searchEmployees(query: string): Observable<ApiResponse<PagedResponse<Employee>>> {
+  searchEmployees(query: string): Observable<ApiResponse<Employee[]>> {
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${this.authService.getToken()}`
     });
 
-    return this.http.get<ApiResponse<PagedResponse<Employee>>>(`${this.apiUrl}/search`, {
+    // แก้ไข URL ให้ตรงกับ Postman
+    return this.http.get<ApiResponse<Employee[]>>(`${this.apiUrl}/search`, {
       headers,
-      params: { query }
+      params: { query: query } // ใช้ query ไม่ใช่ name
     }).pipe(
+      tap(response => console.log('📡 Service response:', response)), // Debug log
       catchError(error => {
         console.error('Error searching employees:', error);
         return throwError(() => new Error('Failed to search employees. Please try again.'));

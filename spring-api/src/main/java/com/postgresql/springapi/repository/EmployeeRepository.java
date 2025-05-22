@@ -15,10 +15,13 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     boolean existsByName(String name);
     boolean existsByEmail(String email);
 
-    @Query("SELECT e FROM Employee e WHERE " +
-            "LOWER(e.name) LIKE :searchTerm OR " +
-            "LOWER(e.email) LIKE :searchTerm OR " +
-            "LOWER(e.position) LIKE :searchTerm OR " +
-            "LOWER(e.department) LIKE :searchTerm")
-    List<Employee> findBySearchTerm(@Param("searchTerm") String searchTerm);
+//    @Query("SELECT e FROM Employee e WHERE " +
+//            "LOWER(e.name) LIKE :searchTerm OR " +
+//            "LOWER(e.email) LIKE :searchTerm OR " +
+//            "LOWER(e.position) LIKE :searchTerm OR " +
+//            "LOWER(e.department) LIKE :searchTerm")
+//    List<Employee> findBySearchTerm(@Param("searchTerm") String searchTerm);
+    // Query ใหม่ - ค้นหาเฉพาะชื่อ
+    @Query("SELECT e FROM Employee e WHERE LOWER(e.name) LIKE :searchTerm")
+    List<Employee> findByNameOnly(@Param("searchTerm") String searchTerm);
 }

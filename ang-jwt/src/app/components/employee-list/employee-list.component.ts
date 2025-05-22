@@ -1,4 +1,4 @@
-import {Component,OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {CurrencyPipe, DatePipe, NgForOf, NgIf} from '@angular/common';
 import {Button} from 'primeng/button';
@@ -16,6 +16,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {Tooltip} from 'primeng/tooltip';
 import {Employee, Pagination} from '../../models/employee.model';
 import {CommonModule} from '@angular/common';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'app-employee-list',
@@ -59,6 +60,7 @@ export class EmployeeListComponent implements OnInit {
 
 
   constructor(
+    private authService: AuthService,
     private employeeService: EmployeeService,
     private dialog: MatDialog,
     private confirmationService: ConfirmationService,
@@ -104,7 +106,10 @@ export class EmployeeListComponent implements OnInit {
     this.loading = true;
     this.employeeService.searchEmployees(this.searchQuery).subscribe(
       (data) => {
-        this.employees = data?.data?.items;
+        console.log('🔍 Search response:', data); // Debug log
+
+        // แก้ไขจาก data?.data?.items เป็น data?.data
+        this.employees = data?.data || []; // Backend ส่ง Array ใน data โดยตรง
         this.loading = false;
       },
       (error) => {
@@ -248,7 +253,7 @@ export class EmployeeListComponent implements OnInit {
   pageChange(event: TableLazyLoadEvent) {
     console.log('pageChange', event);
     const first = event.first ?? 0;
-    const rows = event.rows ?? 10; // หรือใช้ค่าที่เหมาะกับระบบของคุณ
+    const rows = event.rows ?? 10;
 
     const page = Math.floor(first / rows) + 1;
     const pageSize = rows;
@@ -257,5 +262,12 @@ export class EmployeeListComponent implements OnInit {
     console.log('Page Size:', pageSize);
 
     this.loadEmployees(page, pageSize);
+  }
+
+
+  logoutpage() {
+    this.authService.logout();
+    window.location.href = '/login';
+
   }
 }

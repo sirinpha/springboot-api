@@ -15,9 +15,9 @@
     <div class="form-field">
       <label for="email">Email</label>
       <input pInputText id="email" formControlName="email" class="w-full"/>
-      <small *ngIf="employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched" class="error-message">
-        Valid email is required
-      </small>
+<!--      <small *ngIf="employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched" class="error-message">-->
+<!--        Valid email is required-->
+<!--      </small>-->
     </div>
 
     <!-- Position Field -->
@@ -25,10 +25,10 @@
       <label for="position">Position</label>
       <p-dropdown id="position" [options]="positions" formControlName="position" optionLabel="name"
                   [showClear]="true" placeholder="Select a Position" class="w-full"></p-dropdown>
-      <small *ngIf="employeeForm.get('position')?.invalid && employeeForm.get('position')?.touched"
-             class="error-message">
-        Position is required
-      </small>
+<!--      <small *ngIf="employeeForm.get('position')?.invalid && employeeForm.get('position')?.touched"-->
+<!--             class="error-message">-->
+<!--        Position is required-->
+<!--      </small>-->
     </div>
     <!-- Password field -->
     <div class="form-field">
@@ -41,21 +41,18 @@
         styleClass="w-full"
         inputStyleClass="w-full p-2">
       </p-password>
-
-      <small *ngIf="employeeForm.get('password')?.invalid && employeeForm.get('password')?.touched" class="error-message">
-        Password is required
-      </small>
     </div>
+
 
     <!-- Department Field -->
     <div class="form-field">
       <label for="department">Department</label>
       <p-dropdown id="department" [options]="departments" formControlName="department" optionLabel="name"
                   [showClear]="true" placeholder="Select a Department" class="w-full"></p-dropdown>
-      <small *ngIf="employeeForm.get('department')?.invalid && employeeForm.get('department')?.touched"
-             class="error-message">
-        Department is required
-      </small>
+<!--      <small *ngIf="employeeForm.get('department')?.invalid && employeeForm.get('department')?.touched"-->
+<!--             class="error-message">-->
+<!--        Department is required-->
+<!--      </small>-->
     </div>
 
     <!-- Salary Field -->

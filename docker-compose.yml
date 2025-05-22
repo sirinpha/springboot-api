@@ -1,15 +1,15 @@
 services:
   #PostgreSQL Database for the application
   postgres:
-    image: postgres
+    image:  postgres:latest
     restart: always
     container_name: postgres
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=123456
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
     networks:
       - app-network
     volumes:  #กำหนดการแมปไฟล์
@@ -17,7 +17,7 @@ services:
       - ./init-postgres.sh:/docker-entrypoint-initdb.d/init-postgres.sh
     healthcheck:  #ตรวจสอบสถานะของคอนเทนเนอร์
       test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 1s
+      interval: 10s
       timeout: 5s
       retries: 10
 
@@ -28,7 +28,7 @@ services:
     depends_on:
       - postgres
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres  # เปลี่ยนจาก localhost เป็น postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=123456
     ports:
@@ -41,7 +41,7 @@ services:
     image: angular-jwt:1.0
     container_name: angular-app
     ports:
-      - "4205:80"
+      - "4200:80"
     networks:
       - app-network
 

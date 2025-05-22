@@ -1,15 +1,12 @@
 import { Injectable } from '@angular/core';
 import {catchError, Observable, tap, throwError} from 'rxjs';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {ApiResponse, Employee, PagedResponse} from '../models/employee.model';
-import { jwtDecode } from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private apiUrl = 'http://localhost:8082/api/auth';
-  // private apiUrl = `${environment.apiUrl}/auth`;
 
   constructor(private http: HttpClient) { }
 
@@ -53,6 +50,7 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('access_token');
     localStorage.removeItem('user_role');
+    localStorage.removeItem('token');
   }
 
   isLoggedIn(): boolean {
@@ -64,12 +62,22 @@ export class AuthService {
   }
 
   getToken(): string {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('access_token');
     if (!token) {
       console.warn('No token found in localStorage');
       return '';
     }
     return token;
   }
+
+// hasRole สำหรับตรวจสอบว่าผู้ใช้มีบทบาทที่กำหนดหรือไม่
+  hasRole(role: string): boolean {
+    const userRole = this.getUserRole();
+    if (!userRole) {
+      return false;
+    }
+    return userRole === role;
+  }
+
 
 }

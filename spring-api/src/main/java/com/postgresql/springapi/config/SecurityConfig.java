@@ -60,11 +60,11 @@ public class SecurityConfig {
 
     private CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:4205","http://localhost:4200"));
+        corsConfiguration.setAllowedOrigins(List.of("http://localhost:4205", "http://localhost:4200"));
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("*")); // อนุญาตทุก header
         corsConfiguration.setExposedHeaders(List.of("X-Rate-Limit-Remaining"));
-        corsConfiguration.setAllowCredentials(true); // หากใช้ cookie / credentials
+        corsConfiguration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);

@@ -5,7 +5,6 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Data
 @Entity
@@ -42,11 +41,8 @@ public class Employee {
     @Column(nullable = false)
     private String role = "USER";
 
-    @Column(name = "created_at")
-    private Date createdAt;
-
-    @Column(name = "enabled")
-    private Boolean enabled;
+    @Column(name = "enabled", nullable = false)
+    private boolean enabled = true;
 
     @PrePersist
     public void prePersist() {
@@ -54,6 +50,8 @@ public class Employee {
             this.joinDate = LocalDate.now(); // กำหนดค่าเป็นวันที่ปัจจุบันหากไม่ถูกกำหนด
         }
     }
+
+
 
 
 }

@@ -1,17 +1,15 @@
 package com.postgresql.springapi.dto;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Date;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
-public class EmployeeDto {
-
-    private Long id;
+public class EmployeeCreateDto {
+//Create Employee (Input)
+    private String password;
 
     private String name;
 
@@ -31,9 +29,6 @@ public class EmployeeDto {
 
     private String role = "USER";
 
-    private Date createdAt;
-
-    private Boolean enabled;
-
+    private boolean enabled = true;
 
 }

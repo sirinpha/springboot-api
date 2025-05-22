@@ -23,6 +23,12 @@
         styleClass="p-button-success"
         (onClick)="openAddDialog()"
       ></p-button>
+      <p-button
+        label="Logout"
+        icon="pi pi-sign-out"
+        styleClass="p-button-danger"
+        (click)="logoutpage()"
+      ></p-button>
     </div>
   </p-toolbar>
 
@@ -50,10 +56,10 @@
           <th pSortableColumn="email" class="text-left">Email <p-sortIcon field="email"></p-sortIcon></th>
           <th pSortableColumn="position" class="text-left">Position <p-sortIcon field="position"></p-sortIcon></th>
           <th pSortableColumn="department" class="text-left">Department <p-sortIcon field="department"></p-sortIcon></th>
-          <th pSortableColumn="salary" class="text-right">Salary <p-sortIcon field="salary"></p-sortIcon></th>
-          <th pSortableColumn="phone" class="text-left">Phone <p-sortIcon field="phone"></p-sortIcon></th>
-          <th pSortableColumn="address" class="text-left">Address<p-sortIcon field="address"></p-sortIcon></th>
-          <th pSortableColumn="joinDate" class="text-left">Join Date <p-sortIcon field="joinDate"></p-sortIcon></th>
+          <th *ngIf="isAdmin" style="width: 120px;" pSortableColumn="salary" class="text-right">Salary <p-sortIcon field="salary"></p-sortIcon></th>
+          <th *ngIf="isAdmin" style="width: 120px;" pSortableColumn="phone" class="text-left">Phone <p-sortIcon field="phone"></p-sortIcon></th>
+          <th *ngIf="isAdmin" style="width: 120px;" pSortableColumn="address" class="text-left">Address<p-sortIcon field="address"></p-sortIcon></th>
+          <th *ngIf="isAdmin" style="width: 120px;" pSortableColumn="joinDate" class="text-left">Join Date <p-sortIcon field="joinDate"></p-sortIcon></th>
           <th *ngIf="isAdmin" style="width: 120px;">Actions</th>
         </tr>
       </ng-template>
@@ -64,10 +70,10 @@
           <td class="text-left">{{employee.email}}</td>
           <td class="text-left">{{employee.position}}</td>
           <td class="text-left">{{employee.department}}</td>
-          <td class="text-right font-medium">{{employee.salary | currency:'USD':'symbol':'1.0-0'}}</td>
-          <td class="text-left">{{employee.phone}}</td>
-          <td class="text-left">{{employee.address}}</td>
-          <td class="text-left">{{employee.joinDate | date}}</td>
+          <td *ngIf="isAdmin" class="text-right font-medium">{{employee.salary | currency:'USD':'symbol':'1.0-0'}}</td>
+          <td *ngIf="isAdmin" class="text-left">{{employee.phone}}</td>
+          <td *ngIf="isAdmin" class="text-left">{{employee.address}}</td>
+          <td *ngIf="isAdmin" class="text-left">{{employee.joinDate | date}}</td>
           <td *ngIf="isAdmin" class="text-center">
             <div class="flex justify-content-center">
               <p-button

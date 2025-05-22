@@ -58,6 +58,8 @@ export class EmployeeDialogComponent implements OnInit {
   }
 
   initForm(): void {
+    const isEdit = !!this.data.employee;
+
     this.employeeForm = this.fb.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
@@ -67,8 +69,12 @@ export class EmployeeDialogComponent implements OnInit {
       phone: [''],
       address: [''],
       joinDate: [new Date()],
-      password: ['', Validators.required]
+      password: [''] // ไม่ใส่ Validators.required โดยตรง
     });
+
+    if (!isEdit) {
+      this.employeeForm.get('password')?.addValidators(Validators.required);
+    }
   }
 
   loadDropdownOptions(): void {
@@ -139,15 +145,15 @@ export class EmployeeDialogComponent implements OnInit {
       phone: formValues.phone,
       address: formValues.address,
       joinDate: formValues.joinDate,
-      password: formValues.password
     };
+
+    // เพิ่ม password เฉพาะตอนที่มีการกรอก
+    if (formValues.password && formValues.password.trim() !== '') {
+      employeeData.password = formValues.password;
+    }
 
     this.dialogRef.close(employeeData);
   }
 
-  getYearRange(): string {
-    const currentYear = new Date().getFullYear();
-    return `${currentYear - 50}:${currentYear + 10}`;
-  }
 
 }

@@ -80,7 +80,7 @@ public class EmployeeService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(
                 user.getName(),
                 user.getPassword(),
-                user.getEnabled(),
+                user.isEnabled(),
                 true, // accountNonExpired
                 true, // credentialsNonExpired
                 true, // accountNonLocked
@@ -103,7 +103,6 @@ public class EmployeeService implements UserDetailsService {
         user.setPosition(registerRequest.getPosition());
         user.setDepartment(registerRequest.getDepartment());
         user.setJoinDate(LocalDate.from(LocalDateTime.now()));
-        user.setCreatedAt(new Date());
         user.setEnabled(true);
         user.setRole("USER");
 
@@ -127,8 +126,13 @@ public class EmployeeService implements UserDetailsService {
         employeeRepository.deleteById(id);
     }
 
-    public List<Employee> searchEmployees(String query) {
-        String searchTerm = "%" + query.toLowerCase() + "%";
-        return employeeRepository.findBySearchTerm(searchTerm);
+//    public List<Employee> searchEmployees(String query) {
+//        String searchTerm = "%" + query.toLowerCase() + "%";
+//        return employeeRepository.findBySearchTerm(searchTerm);
+//    }
+    public List<Employee> searchEmployeesByName(String name) {
+        String searchTerm = "%" + name.toLowerCase() + "%";
+        return employeeRepository.findByNameOnly(searchTerm);
     }
+
 }
