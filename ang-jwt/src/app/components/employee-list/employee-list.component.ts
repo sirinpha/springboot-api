@@ -79,45 +79,48 @@ export class EmployeeListComponent implements OnInit {
     this.isAdmin = userRole === "ADMIN";
   }
 
-  loadEmployees(page: number = 1, pageSize: number = 10): void {
+  // ปรับปรุง loadEmployees ให้รองรับ search parameter
+  loadEmployees(page: number = 1, pageSize: number = 10, search?: string): void {
     this.loading = true;
-    console.log("loadEmployees");
-    this.employeeService.getEmployees(page, pageSize).subscribe(
+    console.log("loadEmployees", { page, pageSize, search });
+
+    this.employeeService.getEmployees(page, pageSize, search).subscribe(
       (data) => {
-        this.employees = data?.data?.items;
+        this.employees = data?.data?.items || [];
         this.pagination = data?.data;
         console.log("data : ", data?.data?.items);
+        console.log("Loaded employees:", this.employees.length);
         this.loading = false;
       },
       (error) => {
         console.error('Error loading employees:', error);
         this.errorMessage = 'Unable to connect to the server. Please check your connection or try again later.';
+        this.employees = [];
         this.loading = false;
       }
     );
   }
 
   onSearch(): void {
+    console.log('🔍 Searching for:', this.searchQuery);
+
+    // ใช้ loadEmployees method เดียวกัน
     if (this.searchQuery.trim() === '') {
-      this.loadEmployees();
-      return;
+      this.loadEmployees(1, 10); // reset to first page when clearing search
+    } else {
+      this.loadEmployees(1, 10, this.searchQuery.trim());
     }
+  }
 
-    this.loading = true;
-    this.employeeService.searchEmployees(this.searchQuery).subscribe(
-      (data) => {
-        console.log('🔍 Search response:', data); // Debug log
+  onPageChange(event: TableLazyLoadEvent): void {
+    const pageSize = event.rows || 10;
+    const pageIndex = event.first ? event.first / pageSize + 1 : 1;
 
-        // แก้ไขจาก data?.data?.items เป็น data?.data
-        this.employees = data?.data || []; // Backend ส่ง Array ใน data โดยตรง
-        this.loading = false;
-      },
-      (error) => {
-        console.error('Error searching employees:', error);
-        this.errorMessage = 'Error occurred while searching. Please try again.';
-        this.loading = false;
-      }
-    );
+    console.log('📄 Page change:', { pageIndex, pageSize, search: this.searchQuery });
+
+    // ใช้ loadEmployees method เดียวกัน โดยส่ง search query
+    const searchQuery = this.searchQuery.trim() || undefined;
+    this.loadEmployees(pageIndex, pageSize, searchQuery);
   }
 
   openAddDialog(): void {
@@ -249,21 +252,6 @@ export class EmployeeListComponent implements OnInit {
       }
     });
   }
-
-  pageChange(event: TableLazyLoadEvent) {
-    console.log('pageChange', event);
-    const first = event.first ?? 0;
-    const rows = event.rows ?? 10;
-
-    const page = Math.floor(first / rows) + 1;
-    const pageSize = rows;
-
-    console.log('Page:', page);
-    console.log('Page Size:', pageSize);
-
-    this.loadEmployees(page, pageSize);
-  }
-
 
   logoutpage() {
     this.authService.logout();

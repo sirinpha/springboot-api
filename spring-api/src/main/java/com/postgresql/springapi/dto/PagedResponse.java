@@ -12,4 +12,15 @@ public class PagedResponse<T> {
     private long totalItems;
     private List<T> items;
 
+    public PagedResponse() {
+    }
+
+    public PagedResponse(int page, int pageSize, int totalItems, int totalPages, List<T> items) {
+        this.page = page;
+        this.pageSize = pageSize;
+        this.totalItems = totalItems;
+        this.totalPages = totalPages;
+        this.items = items;
+    }
+
 }

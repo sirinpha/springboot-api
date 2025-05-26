@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import {catchError, Observable, switchMap, tap, throwError} from 'rxjs';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {catchError, Observable, tap, throwError} from 'rxjs';
 import {ApiResponse, Employee, PagedResponse} from '../models/employee.model';
-import { AuthService } from './auth.service';
+import {AuthService} from './auth.service';
 import {Router} from '@angular/router';
 
 @Injectable({
@@ -11,40 +11,34 @@ import {Router} from '@angular/router';
 export class EmployeeService {
   private apiUrl = 'http://localhost:8082/api/employees';
 
-  constructor(private http: HttpClient, private authService: AuthService,private router: Router) {}
+  constructor(private http: HttpClient, private authService: AuthService, private router: Router) {
+  }
 
-  getEmployees(page: number, pageSize: number): Observable<ApiResponse<PagedResponse<Employee>>> {
+  getEmployees(page: number, pageSize: number, search?: string): Observable<ApiResponse<PagedResponse<Employee>>> {
     const headers = this.buildAuthHeaders();
 
-    const params = new HttpParams()
+    let params = new HttpParams()
       .set('page', page.toString())
       .set('pageSize', pageSize.toString());
 
-    return this.http.get<ApiResponse<PagedResponse<Employee>>>(this.apiUrl, { headers, params });
-  }
+    // เพิ่ม search parameter ถ้ามีค่า
+    if (search && search.trim() !== '') {
+      params = params.set('search', search.trim());
+    }
 
-
-  searchEmployees(query: string): Observable<ApiResponse<Employee[]>> {
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${this.authService.getToken()}`
-    });
-
-    // แก้ไข URL ให้ตรงกับ Postman
-    return this.http.get<ApiResponse<Employee[]>>(`${this.apiUrl}/search`, {
-      headers,
-      params: { query: query } // ใช้ query ไม่ใช่ name
-    }).pipe(
-      tap(response => console.log('📡 Service response:', response)), // Debug log
-      catchError(error => {
-        console.error('Error searching employees:', error);
-        return throwError(() => new Error('Failed to search employees. Please try again.'));
-      })
-    );
+    return this.http.get<ApiResponse<PagedResponse<Employee>>>(this.apiUrl, {headers, params})
+      .pipe(
+        tap(response => console.log('📡 API Response:', response)),
+        catchError(error => {
+          console.error('Error fetching employees:', error);
+          return throwError(() => new Error('Failed to fetch employees. Please try again.'));
+        })
+      );
   }
 
   updateEmployee(id: number, employee: any): Observable<any> {
     const headers = this.buildAuthHeaders(); // เพิ่มการสร้าง headers
-    return this.http.put<any>(`${this.apiUrl}/${id}`, employee, { headers });
+    return this.http.put<any>(`${this.apiUrl}/${id}`, employee, {headers});
   }
 
 
@@ -62,7 +56,7 @@ export class EmployeeService {
     console.log('Headers being sent:', headers);
 
     // ส่ง request พร้อม headers
-    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers })
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, {headers})
       .pipe(
         tap(() => console.log('Delete request successful')),
         catchError(error => {
@@ -81,12 +75,12 @@ export class EmployeeService {
   private buildAuthHeaders(): HttpHeaders {
     const token = this.authService.getToken();
     console.log('Token used for request:', token);
-    return new HttpHeaders({ 'Authorization': `Bearer ${token}` });
+    return new HttpHeaders({'Authorization': `Bearer ${token}`});
   }
 
   addEmployee(employee: Employee): Observable<Employee> {
     const headers = this.buildAuthHeaders(); // เมธอดที่สร้าง headers
-    return this.http.post<Employee>(this.apiUrl, employee, { headers });
+    return this.http.post<Employee>(this.apiUrl, employee, {headers});
   }
 
 }

@@ -6,7 +6,6 @@ import com.postgresql.springapi.exception.ResourceNotFoundException;
 import com.postgresql.springapi.entity.Employee;
 import com.postgresql.springapi.service.EmployeeService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -17,8 +16,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @RestController
 @RequestMapping("/api/employees")
@@ -35,45 +32,51 @@ public class EmployeeController {
     @GetMapping
     public ResponseEntity<ApiResponse<PagedResponse<EmployeesDto>>> getAllEmployees(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "10") int pageSize) {
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(required = false) String search) {
 
-        List<Employee> allEmployees = employeeService.findAll();
-        int totalItems = allEmployees.size();
-        int totalPages = (int) Math.ceil((double) totalItems / pageSize);
-        int fromIndex = Math.min((page - 1) * pageSize, totalItems);
-        int toIndex = Math.min(fromIndex + pageSize, totalItems);
+        try {
+            // เตรียมข้อมูลพนักงาน
+            List<Employee> filteredEmployees = (search != null && !search.trim().isEmpty())
+                    ? employeeService.searchEmployeesByName(search.trim())
+                    : employeeService.findAll();
 
-        List<EmployeesDto> pagedItems = allEmployees.subList(fromIndex, toIndex)
-                .stream().map(employee -> {
-                    EmployeesDto dto = new EmployeesDto();
-                    dto.setId(employee.getId());
-                    dto.setName(employee.getName());
-                    dto.setPosition(employee.getPosition());
-                    dto.setEmail(employee.getEmail());
-                    dto.setDepartment(employee.getDepartment());
-                    dto.setSalary(employee.getSalary());
-                    dto.setPhone(employee.getPhone());
-                    dto.setAddress(employee.getAddress());
-                    dto.setJoinDate(employee.getJoinDate());
-                    dto.setEnabled(employee.isEnabled());
-                    return dto;
-                }).collect(Collectors.toList());
+            // คำนวณ Pagination
+            int totalItems = filteredEmployees.size();
+            int totalPages = (int) Math.ceil((double) totalItems / pageSize);
+            int fromIndex = Math.min((page - 1) * pageSize, totalItems);
+            int toIndex = Math.min(fromIndex + pageSize, totalItems);
 
-        //constructed response
-        PagedResponse<EmployeesDto> pagedResponse = new PagedResponse<>();
-        pagedResponse.setPage(page);
-        pagedResponse.setPageSize(pageSize);
-        pagedResponse.setTotalItems(totalItems);
-        pagedResponse.setTotalPages(totalPages);
-        pagedResponse.setItems(pagedItems);
+            List<EmployeesDto> pagedItems = filteredEmployees.subList(fromIndex, toIndex)
+                    .stream()
+                    .map(this::convertToEmployeesDto)
+                    .collect(Collectors.toList());
 
-        ApiResponse<PagedResponse<EmployeesDto>> response = new ApiResponse<>(
-                "0000",
-                "Operation completed successfully.",
-                pagedResponse
-        );
+            // สร้าง PagedResponse
+            PagedResponse<EmployeesDto> pagedResponse = new PagedResponse<>();
+            pagedResponse.setPage(page);
+            pagedResponse.setPageSize(pageSize);
+            pagedResponse.setTotalItems(totalItems);
+            pagedResponse.setTotalPages(totalPages);
+            pagedResponse.setItems(pagedItems);
 
-        return ResponseEntity.ok(response);
+            // สร้าง ApiResponse
+            ApiResponse<PagedResponse<EmployeesDto>> response = new ApiResponse<>(
+                    "0000",
+                    "Operation completed successfully.",
+                    pagedResponse
+            );
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+
+            ApiResponse<PagedResponse<EmployeesDto>> response = new ApiResponse<>(
+                    "9999",
+                    "An error occurred while processing the request",
+                    new PagedResponse<>(page, pageSize, 0, 0, new ArrayList<>())
+            );
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
     }
 
     @GetMapping("/{id}")
@@ -140,54 +143,6 @@ public class EmployeeController {
                     "9999",
                     "Error creating employee",
                     null
-            );
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
-        }
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<ApiResponse<List<EmployeesDto>>> searchEmployees(@RequestParam @NotBlank(message = "Search query is required") String query) {
-        try {
-            if (query == null || query.trim().isEmpty()) {
-                ApiResponse<List<EmployeesDto>> response = new ApiResponse<>(
-                        "1001",
-                        "Search query cannot be empty",
-                        new ArrayList<>()
-                );
-                return ResponseEntity.badRequest().body(response);
-            }
-
-            String trimmedQuery = query.trim();
-
-            // ใช้ method ที่ค้นหาจากชื่อเท่านั้น
-            List<Employee> results = employeeService.searchEmployeesByName(trimmedQuery);
-
-            List<EmployeesDto> searchResults = results.stream()
-                    .map(this::convertToEmployeesDto)
-                    .collect(Collectors.toList());
-
-            String message = searchResults.isEmpty()
-                    ? String.format("No employees found matching '%s'", trimmedQuery)
-                    : String.format("Found %d employee%s matching '%s'",
-                    searchResults.size(),
-                    searchResults.size() > 1 ? "s" : "",
-                    trimmedQuery);
-
-            ApiResponse<List<EmployeesDto>> response = new ApiResponse<>(
-                    "0000",
-                    message,
-                    searchResults
-            );
-
-            return ResponseEntity.ok(response);
-
-        } catch (Exception e) {
-            System.err.println("Error searching employees by name: " + e.getMessage());
-
-            ApiResponse<List<EmployeesDto>> response = new ApiResponse<>(
-                    "9999",
-                    "An error occurred while searching employees by name",
-                    new ArrayList<>()
             );
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }

@@ -21,33 +21,9 @@ services:
       timeout: 5s
       retries: 10
 
-  #Back-end Spring Boot application
-  spring-api:
-    image: spring-api:1.0
-    container_name: spring-api
-    depends_on:
-      - postgres
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=123456
-    ports:
-      - "8082:8082"
-    networks:
-      - app-network
-
-  #Angular Frontend application
-  angular-app:
-    image: angular-jwt:1.0
-    container_name: angular-app
-    ports:
-      - "4200:80"
-    networks:
-      - app-network
-
 networks:
   app-network:
-    driver: bridge
+    external: true
 
 volumes:
   postgres-data:

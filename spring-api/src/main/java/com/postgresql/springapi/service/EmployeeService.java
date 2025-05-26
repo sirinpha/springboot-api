@@ -121,18 +121,13 @@ public class EmployeeService implements UserDetailsService {
         return employeeRepository.save(employee);
     }
 
-
     public void deleteById(Long id) {
         employeeRepository.deleteById(id);
     }
 
-//    public List<Employee> searchEmployees(String query) {
-//        String searchTerm = "%" + query.toLowerCase() + "%";
-//        return employeeRepository.findBySearchTerm(searchTerm);
-//    }
-    public List<Employee> searchEmployeesByName(String name) {
-        String searchTerm = "%" + name.toLowerCase() + "%";
-        return employeeRepository.findByNameOnly(searchTerm);
+    public List<Employee> searchEmployeesByName(String query) {
+        String searchTerm = "%" + query.toLowerCase() + "%";
+        return employeeRepository.findBySearch(searchTerm);
     }
 
 }

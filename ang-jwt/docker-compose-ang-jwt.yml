@@ -1,0 +1,13 @@
+#Angular Frontend application
+services:
+  angular-app:
+    image: angular-jwt:1.0
+    container_name: angular-app
+    ports:
+      - "4200:80"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    external: true

@@ -1,0 +1,17 @@
+#Back-end Spring Boot application
+services:
+  spring-api:
+    image: spring-api:1.0  # ใช้ image ที่ build แล้ว
+    container_name: spring-api
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/postgres
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=123456
+    ports:
+      - "8082:8082"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    external: true
